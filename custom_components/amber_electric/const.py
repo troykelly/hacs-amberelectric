@@ -3,6 +3,13 @@
 DOMAIN = "amber_electric"
 
 ATTR_NEM_TIME = "nem_time"
+ATTR_PERCENTILE_RANK = "percentile_rank"
+ATTR_PERIOD_DELTA = "period_delta"
+ATTR_PERIOD_START = "period_start"
+ATTR_PERIOD_END = "period_end"
+ATTR_PERIOD_TYPE = "period_type"
+ATTR_WHOLESALE_KWH_PRICE = "wholesale_kwh_price"
+ATTR_RENEWABLES_PERCENTAGE = "renewables_percentage"
 
 CURRENCY_AUD = "AUD"
 LOSS_FACTOR = "loss_factor"

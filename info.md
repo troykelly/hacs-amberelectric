@@ -8,15 +8,21 @@
 
 ### Features
 
-{% if version_installed.replace("v", "").replace(".","") | int < 1  %}
+{% if version_installed.replace("v", "").replace(".","") | int < 4  %}
 
+- Added market data including solar generation
+  {% endif %}
+  {% if version_installed.replace("v", "").replace(".","") | int < 1  %}
 - Initial deployment
   {% endif %}
 
 ### Bugfixes
 
-{% if version_installed.replace("v", "").replace(".","") | int < 1  %}
+{% if version_installed.replace("v", "").replace(".","") | int < 3  %}
 
+- Fixed incorrect selection of current market period
+  {% endif %}
+  {% if version_installed.replace("v", "").replace(".","") | int < 1  %}
 - Retrieving pricing with no GST included
   {% endif %}
 
