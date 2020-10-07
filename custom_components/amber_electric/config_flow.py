@@ -10,7 +10,12 @@ from .const import DOMAIN  # pylint:disable=unused-import
 
 _LOGGER = logging.getLogger(__name__)
 
-DATA_SCHEMA = vol.Schema({"username": str, "password": str})
+DATA_SCHEMA = vol.Schema(
+    {
+        vol.Optional("username"): vol.All(str, vol.Length(min=1)),
+        vol.Optional("password"): vol.All(str, vol.Length(min=1)),
+    }
+)
 
 
 async def validate_input(hass: core.HomeAssistant, data):
@@ -19,22 +24,33 @@ async def validate_input(hass: core.HomeAssistant, data):
     Data has the keys from DATA_SCHEMA with values provided by the user.
     """
 
-    _LOGGER.debug(
-        "Connecting to api using lat/long %s %s",
-        hass.config.latitude,
-        hass.config.longitude,
-    )
+    data_to_save = dict()
+    data_to_save["title"] = "Amber Electric"
 
-    api = AmberElectric(
-        loop=hass.loop,
-        latitude=hass.config.latitude,
-        longitude=hass.config.longitude,
-        username=data["username"],
-        password=data["password"],
-    )
+    if (
+        "username" in data
+        and "password" in data
+        and (data["username"] and data["password"])
+    ):
+        api = AmberElectric(
+            loop=hass.loop,
+            latitude=hass.config.latitude,
+            longitude=hass.config.longitude,
+            username=data["username"],
+            password=data["password"],
+        )
 
-    if not await api.auth():
-        raise InvalidAuth
+        if not await api.auth():
+            raise InvalidAuth
+
+        data_to_save["username"] = data["username"]
+        data_to_save["password"] = data["password"]
+    else:
+        api = AmberElectric(
+            loop=hass.loop,
+            latitude=hass.config.latitude,
+            longitude=hass.config.longitude,
+        )
 
     await api.market.update()
 
@@ -42,24 +58,13 @@ async def validate_input(hass: core.HomeAssistant, data):
         _LOGGER.error("No postcode returned from address search")
         raise CannotConnect
 
-    # If you cannot connect:
-    # throw CannotConnect
-    # If the authentication is wrong:
-    # InvalidAuth
-
-    # Return info that you want to store in the config entry.
-    return {
-        "title": "Amber Electric",
-        "username": data["username"],
-        "password": data["password"],
-    }
+    return data_to_save
 
 
 class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
     """Handle a config flow for Amber Electric."""
 
     VERSION = 1
-    # TODO pick one of the available connection classes in homeassistant/config_entries.py
     CONNECTION_CLASS = config_entries.CONN_CLASS_CLOUD_POLL
 
     async def async_step_user(self, user_input=None):
