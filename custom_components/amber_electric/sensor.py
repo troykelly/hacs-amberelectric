@@ -85,7 +85,26 @@ async def async_setup_entry(hass: HomeAssistantType, entry, async_add_entities):
         if not (event_data):
             _LOGGER.warning("Event received with no event data")
             return None
-        _LOGGER.debug("Update event received")
+        _LOGGER.debug(
+            "%s Usage price: %s",
+            event_data["market"].postcode,
+            event_data["market"].usage_price,
+        )
+        _LOGGER.debug(
+            "%s Export price: %s",
+            event_data["market"].postcode,
+            event_data["market"].export_price,
+        )
+        _LOGGER.debug(
+            "%s Current demand: %s",
+            event_data["market"].postcode,
+            event_data["market"].current_variable.operational_demand,
+        )
+        _LOGGER.debug(
+            "%s Solar generation: %s",
+            event_data["market"].postcode,
+            event_data["market"].current_variable.rooftop_solar,
+        )
 
         for entity_id in hass.data[DOMAIN]["entity_ref"]:
             try:
@@ -119,18 +138,19 @@ class AmberElectricMarketConsumption(RestoreEntity):
         """Set up Amber Electric Market Consumption Entity."""
         super().__init__()
         self.__api = api
-        self.__period = api.market.current_variable
         self.__name = f"{self.__api.postcode} Market Consumption"
         self.__id = f"{self.__api.postcode}_market_consumption"
 
     def async_device_changed(self):
         """Send changed data to HA"""
-        _LOGGER.debug("%s (%s) advising HA of update", self.name, self.unique_id)
+        _LOGGER.debug(
+            "%s (%s) advising HA of update: %s", self.name, self.unique_id, self.state
+        )
         self.async_schedule_update_ha_state()
 
     @property
     def state(self):
-        return self.__period.operational_demand
+        return self.__api.market.current_variable.operational_demand
 
     @property
     def unit_of_measurement(self):
@@ -169,19 +189,29 @@ class AmberElectricMarketConsumption(RestoreEntity):
         if self.__api.market.nem_time:
             data[ATTR_NEM_TIME] = self.__api.market.nem_time.isoformat()
         data[NETWORK_PROVIDER] = self.__api.market.network_provider
-        data[ATTR_PERCENTILE_RANK] = getattr(self.__period, ATTR_PERCENTILE_RANK, None)
-        data[ATTR_PERIOD_DELTA] = getattr(self.__period, ATTR_PERIOD_DELTA, None)
+        data[ATTR_PERCENTILE_RANK] = getattr(
+            self.__api.market.current_variable, ATTR_PERCENTILE_RANK, None
+        )
+        data[ATTR_PERIOD_DELTA] = getattr(
+            self.__api.market.current_variable, ATTR_PERIOD_DELTA, None
+        )
         if data[ATTR_PERIOD_DELTA]:
             data[ATTR_PERIOD_DELTA] = data[ATTR_PERIOD_DELTA].total_seconds()
-        data[ATTR_PERIOD_START] = getattr(self.__period, ATTR_PERIOD_START, None)
+        data[ATTR_PERIOD_START] = getattr(
+            self.__api.market.current_variable, ATTR_PERIOD_START, None
+        )
         if data[ATTR_PERIOD_START]:
             data[ATTR_PERIOD_START] = data[ATTR_PERIOD_START].isoformat()
-        data[ATTR_PERIOD_END] = getattr(self.__period, ATTR_PERIOD_END, None)
+        data[ATTR_PERIOD_END] = getattr(
+            self.__api.market.current_variable, ATTR_PERIOD_END, None
+        )
         if data[ATTR_PERIOD_END]:
             data[ATTR_PERIOD_END] = data[ATTR_PERIOD_END].isoformat()
-        data[ATTR_PERIOD_TYPE] = getattr(self.__period, ATTR_PERIOD_TYPE, None)
+        data[ATTR_PERIOD_TYPE] = getattr(
+            self.__api.market.current_variable, ATTR_PERIOD_TYPE, None
+        )
         data[ATTR_WHOLESALE_KWH_PRICE] = getattr(
-            self.__period, ATTR_WHOLESALE_KWH_PRICE, None
+            self.__api.market.current_variable, ATTR_WHOLESALE_KWH_PRICE, None
         )
         return data
 
@@ -215,18 +245,19 @@ class AmberElectricMarketSolar(RestoreEntity):
         """Set up Amber Electric Market Solar Entity."""
         super().__init__()
         self.__api = api
-        self.__period = api.market.current_variable
         self.__name = f"{self.__api.postcode} Market Solar"
         self.__id = f"{self.__api.postcode}_market_solar"
 
     def async_device_changed(self):
         """Send changed data to HA"""
-        _LOGGER.debug("%s (%s) advising HA of update", self.name, self.unique_id)
+        _LOGGER.debug(
+            "%s (%s) advising HA of update: %s", self.name, self.unique_id, self.state
+        )
         self.async_schedule_update_ha_state()
 
     @property
     def state(self):
-        return self.__period.rooftop_solar
+        return self.__api.market.current_variable.rooftop_solar
 
     @property
     def unit_of_measurement(self):
@@ -266,18 +297,26 @@ class AmberElectricMarketSolar(RestoreEntity):
             data[ATTR_NEM_TIME] = self.__api.market.nem_time.isoformat()
         data[NETWORK_PROVIDER] = self.__api.market.network_provider
         data[ATTR_RENEWABLES_PERCENTAGE] = getattr(
-            self.__period, ATTR_RENEWABLES_PERCENTAGE, None
+            self.__api.market.current_variable, ATTR_RENEWABLES_PERCENTAGE, None
         )
-        data[ATTR_PERIOD_DELTA] = getattr(self.__period, ATTR_PERIOD_DELTA, None)
+        data[ATTR_PERIOD_DELTA] = getattr(
+            self.__api.market.current_variable, ATTR_PERIOD_DELTA, None
+        )
         if data[ATTR_PERIOD_DELTA]:
             data[ATTR_PERIOD_DELTA] = data[ATTR_PERIOD_DELTA].total_seconds()
-        data[ATTR_PERIOD_START] = getattr(self.__period, ATTR_PERIOD_START, None)
+        data[ATTR_PERIOD_START] = getattr(
+            self.__api.market.current_variable, ATTR_PERIOD_START, None
+        )
         if data[ATTR_PERIOD_START]:
             data[ATTR_PERIOD_START] = data[ATTR_PERIOD_START].isoformat()
-        data[ATTR_PERIOD_END] = getattr(self.__period, ATTR_PERIOD_END, None)
+        data[ATTR_PERIOD_END] = getattr(
+            self.__api.market.current_variable, ATTR_PERIOD_END, None
+        )
         if data[ATTR_PERIOD_END]:
             data[ATTR_PERIOD_END] = data[ATTR_PERIOD_END].isoformat()
-        data[ATTR_PERIOD_TYPE] = getattr(self.__period, ATTR_PERIOD_TYPE, None)
+        data[ATTR_PERIOD_TYPE] = getattr(
+            self.__api.market.current_variable, ATTR_PERIOD_TYPE, None
+        )
         return data
 
     @property
@@ -312,14 +351,14 @@ class AmberElectricPriceSensor(RestoreEntity):
         self.__api = api
         self.__price_type = price_type
         if self.__price_type == "USAGE":
-            self.__price = api.market.usage_price
-            self.__ancillary_data = api.market.e1
+            self.__price = "usage_price"
+            self.__ancillary_data = "e1"
             self.__name = f"{self.__api.postcode} usage market rate"
             self.__id = f"{self.__api.postcode}_usage_market"
             self.__price_modifier = 1
         elif self.__price_type == "EXPORT":
-            self.__price = api.market.export_price
-            self.__ancillary_data = api.market.b1
+            self.__price = "export_price"
+            self.__ancillary_data = "b1"
             self.__name = f"{self.__api.postcode} export market rate"
             self.__id = f"{self.__api.postcode}_export_market"
             self.__price_modifier = -1
@@ -328,13 +367,18 @@ class AmberElectricPriceSensor(RestoreEntity):
 
     def async_device_changed(self):
         """Send changed data to HA"""
-        _LOGGER.debug("%s (%s) advising HA of update", self.name, self.unique_id)
+        _LOGGER.debug(
+            "%s (%s) advising HA of update: %s", self.name, self.unique_id, self.state
+        )
         self.async_schedule_update_ha_state()
 
     @property
     def state(self):
-        if self.__price is not None and self.__price != 0:
-            return round(self.__price * self.__price_modifier, 4)
+        if not self.__price:
+            return None
+        price = getattr(self.__api.market, self.__price, None)
+        if price is not None and price != 0:
+            return round(price * self.__price_modifier, 4)
         return 0
 
     @property
@@ -364,21 +408,26 @@ class AmberElectricPriceSensor(RestoreEntity):
     @property
     def device_state_attributes(self):
         """Return device specific attributes."""
+        ancillary_data = getattr(self.__api.market, self.__ancillary_data, None)
         data = dict()
         data[ATTR_ATTRIBUTION] = "© Amber Electric Pty Ltd ABN 98 623 603 805"
         if self.__api.market.nem_time:
             data[ATTR_NEM_TIME] = self.__api.market.nem_time.isoformat()
         data[NETWORK_PROVIDER] = self.__api.market.network_provider
-        data[LOSS_FACTOR] = self.__ancillary_data.loss_factor
-        data[AMBER_DAILY_PRICE] = self.__ancillary_data.amber_daily_price
-        data[GREEN_KWH_PRICE] = self.__ancillary_data.green_kwh_price
-        data[LOSS_FACTOR] = self.__ancillary_data.loss_factor
-        data[MARKET_KWH_PRICE] = self.__ancillary_data.market_kwh_price
-        data[NETWORK_DAILY_PRICE] = self.__ancillary_data.network_daily_price
-        data[NETWORK_KWH_PRICE] = self.__ancillary_data.network_kwh_price
-        data[OFFSET_KWH_PRICE] = self.__ancillary_data.offset_kwh_price
-        data[TOTAL_DAILY_PRICE] = self.__ancillary_data.total_daily_price
-        data[TOTAL_FIXED_KWH_PRICE] = self.__ancillary_data.total_fixed_kwh_price
+
+        if not ancillary_data:
+            return data
+
+        data[LOSS_FACTOR] = ancillary_data.loss_factor
+        data[AMBER_DAILY_PRICE] = ancillary_data.amber_daily_price
+        data[GREEN_KWH_PRICE] = ancillary_data.green_kwh_price
+        data[LOSS_FACTOR] = ancillary_data.loss_factor
+        data[MARKET_KWH_PRICE] = ancillary_data.market_kwh_price
+        data[NETWORK_DAILY_PRICE] = ancillary_data.network_daily_price
+        data[NETWORK_KWH_PRICE] = ancillary_data.network_kwh_price
+        data[OFFSET_KWH_PRICE] = ancillary_data.offset_kwh_price
+        data[TOTAL_DAILY_PRICE] = ancillary_data.total_daily_price
+        data[TOTAL_FIXED_KWH_PRICE] = ancillary_data.total_fixed_kwh_price
         return data
 
     @property

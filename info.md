@@ -18,8 +18,11 @@
 
 ### Bugfixes
 
-{% if version_installed.replace("v", "").replace(".","") | int < 3  %}
+{% if version_installed.replace("v", "").replace(".","") | int < 6  %}
 
+- Fixed market data not updating
+  {% endif %}
+  {% if version_installed.replace("v", "").replace(".","") | int < 3  %}
 - Fixed incorrect selection of current market period
   {% endif %}
   {% if version_installed.replace("v", "").replace(".","") | int < 1  %}
