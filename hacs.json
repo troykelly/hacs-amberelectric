@@ -1,0 +1,11 @@
+{
+    "name": "Trackimo Device Tracker",
+    "country": "AU",
+    "domains": [
+        "device_tracker"
+    ],
+    "homeassistant": "0.115.3",
+    "iot_class": [
+        "Cloud Polling"
+    ]
+}
