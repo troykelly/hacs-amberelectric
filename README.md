@@ -1,6 +1,6 @@
 # Amber Electric for Home Assistant
 
-[![GitHub Stars](https://img.shields.io/github/stars/troykelly/hacs-amberelectric.svg)](https://github.com/troykelly/hacs-amberelectric/stargazers) [![GitHub Issues](https://img.shields.io/github/issues/troykelly/hacs-amberelectric.svg)](https://github.com/troykelly/hacs-amberelectric/issues) [![Current Version](https://img.shields.io/badge/version-0.0.1-green.svg)](https://github.com/troykelly/hacs-amberelectric) ![Validate with hassfest](https://github.com/troykelly/hacs-amberelectric/workflows/Validate%20with%20hassfest/badge.svg?branch=master) ![Validate](https://github.com/troykelly/hacs-amberelectric/workflows/Validate/badge.svg)
+[![GitHub Stars](https://img.shields.io/github/stars/troykelly/hacs-amberelectric.svg)](https://github.com/troykelly/hacs-amberelectric/stargazers) [![GitHub Issues](https://img.shields.io/github/issues/troykelly/hacs-amberelectric.svg)](https://github.com/troykelly/hacs-amberelectric/issues) [![Current Version](https://img.shields.io/badge/version-0.0.7-green.svg)](https://github.com/troykelly/hacs-amberelectric) ![Validate with hassfest](https://github.com/troykelly/hacs-amberelectric/workflows/Validate%20with%20hassfest/badge.svg?branch=master) ![Validate](https://github.com/troykelly/hacs-amberelectric/workflows/Validate/badge.svg)
 
 Amber Electric integration for Home Assistant. See current demand and pricing for your area.
 
