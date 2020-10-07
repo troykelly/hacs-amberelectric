@@ -1,8 +1,8 @@
 # Trackimo for Home Assistant
 
-[![GitHub Stars](https://img.shields.io/github/stars/troykelly/hacs-trackimo.svg)](https://github.com/troykelly/hacs-trackimo/stargazers) [![GitHub Issues](https://img.shields.io/github/issues/troykelly/hacs-trackimo.svg)](https://github.com/troykelly/hacs-trackimo/issues) [![Current Version](https://img.shields.io/badge/version-0.0.20-green.svg)](https://github.com/troykelly/hacs-trackimo) ![Validate with hassfest](https://github.com/troykelly/hacs-trackimo/workflows/Validate%20with%20hassfest/badge.svg?branch=master) ![Validate](https://github.com/troykelly/hacs-trackimo/workflows/Validate/badge.svg)
+[![GitHub Stars](https://img.shields.io/github/stars/troykelly/hacs-amberelectric.svg)](https://github.com/troykelly/hacs-amberelectric/stargazers) [![GitHub Issues](https://img.shields.io/github/issues/troykelly/hacs-amberelectric.svg)](https://github.com/troykelly/hacs-amberelectric/issues) [![Current Version](https://img.shields.io/badge/version-0.0.1-green.svg)](https://github.com/troykelly/hacs-amberelectric) ![Validate with hassfest](https://github.com/troykelly/hacs-amberelectric/workflows/Validate%20with%20hassfest/badge.svg?branch=master) ![Validate](https://github.com/troykelly/hacs-amberelectric/workflows/Validate/badge.svg)
 
-A simple Trackimo integration for Home Assistant. Allows you to see where your Trackimo devices are.
+Amber Electric integration for Home Assistant. See current demand and pricing for your area.
 
 ---
 
@@ -16,8 +16,8 @@ If this helps you, or you are just generous. I do love coffee.
 
 ## Features
 
-- Get all Trackimo Devices
-- Track Them
+- See current network demand
+- See current pricing in your area for both consumption and export (solar etc)
 
 ---
 
@@ -25,19 +25,19 @@ If this helps you, or you are just generous. I do love coffee.
 
 Add the integration.
 
-Supply your Trackimo Username and Passowrd
+Supply your Amber Electric Username and Passowrd
 
 ---
 
 ## Usage
 
-Once connected, your Trackimo devices will appear as `device_tracker.device_name`
+Once connected, several sensors will appear with pricing and demand information.
 
 ---
 
 ## Contributions
 
-PR's are more than welcome either to the HACS component or the Trackimo Library.
+PR's are more than welcome either to the HACS component or the Amber Electric Library.
 
 ### Thanks to:
 
