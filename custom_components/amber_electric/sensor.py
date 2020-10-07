@@ -316,11 +316,13 @@ class AmberElectricPriceSensor(RestoreEntity):
             self.__ancillary_data = api.market.e1
             self.__name = f"{self.__api.postcode} usage market rate"
             self.__id = f"{self.__api.postcode}_usage_market"
+            self.__price_modifier = 1
         elif self.__price_type == "EXPORT":
             self.__price = api.market.export_price
             self.__ancillary_data = api.market.b1
             self.__name = f"{self.__api.postcode} export market rate"
             self.__id = f"{self.__api.postcode}_export_market"
+            self.__price_modifier = -1
         else:
             _LOGGER.error("Unknown price type: %s", price_type)
 
@@ -331,7 +333,9 @@ class AmberElectricPriceSensor(RestoreEntity):
 
     @property
     def state(self):
-        return self.__price
+        if self.__price is not None and self.__price != 0:
+            return round(self.__price * self.__price_modifier, 4)
+        return 0
 
     @property
     def unit_of_measurement(self):
