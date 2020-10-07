@@ -2,6 +2,7 @@
 
 DOMAIN = "amber_electric"
 
+ATTR_NEM_TIME = "nem_time"
 
 CURRENCY_AUD = "AUD"
 LOSS_FACTOR = "loss_factor"
@@ -11,6 +12,7 @@ LOSS_FACTOR = "loss_factor"
 MARKET_KWH_PRICE = "market_kwh_price"
 NETWORK_DAILY_PRICE = "network_daily_price"
 NETWORK_KWH_PRICE = "network_kwh_price"
+NETWORK_PROVIDER = "network_provider"
 OFFSET_KWH_PRICE = "offset_kwh_price"
 TOTAL_DAILY_PRICE = "total_daily_price"
 TOTAL_FIXED_KWH_PRICE = "total_fixed_kwh_price"

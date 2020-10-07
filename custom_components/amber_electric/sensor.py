@@ -5,6 +5,7 @@ import logging
 import voluptuous as vol
 
 from homeassistant.const import (
+    ATTR_ATTRIBUTION,
     ATTR_UNIT_OF_MEASUREMENT,
     DEVICE_CLASS_ENERGY,
     ENERGY_KILO_WATT_HOUR,
@@ -26,6 +27,7 @@ from homeassistant.helpers.typing import HomeAssistantType
 
 from .const import (
     DOMAIN,
+    ATTR_NEM_TIME,
     CURRENCY_AUD,
     LOSS_FACTOR,
     AMBER_DAILY_PRICE,
@@ -34,6 +36,7 @@ from .const import (
     MARKET_KWH_PRICE,
     NETWORK_DAILY_PRICE,
     NETWORK_KWH_PRICE,
+    NETWORK_PROVIDER,
     OFFSET_KWH_PRICE,
     TOTAL_DAILY_PRICE,
     TOTAL_FIXED_KWH_PRICE,
@@ -106,7 +109,7 @@ class AmberElectricMarketConsumption(RestoreEntity):
         """Set up Amber Electric Market Consumption Entity."""
         super().__init__()
         self.__api = api
-        self.__period = api.market.variable.periods[0]
+        self.__period = api.market.current_variable
         self.__name = f"{self.__api.postcode} Market Consumption"
         self.__id = f"{self.__api.postcode}_market_onsumption"
 
@@ -152,28 +155,10 @@ class AmberElectricMarketConsumption(RestoreEntity):
     def device_state_attributes(self):
         """Return device specific attributes."""
         data = dict()
-        # "created_at": "2020-10-07T12:04:41+10:00",
-        # "operational_demand": 7192.31,
-        # "percentile_rank": 0.45,
-        # "period": "2020-10-06T12:30:00+10:00",
-        # "period_source": 1800.0,
-        # "period_type": "ACTUAL",
-        # "region": "NSW1",
-        # "renewables_percentage": 0.23648912556801402,
-        # "rooftop_solar": 1205.37,
-        # "semi_scheduled_generation": 780.59,
-        # "ts": 1601951400.0,
-        # "wholesale_kwh_price": 0.05534
-        # data[LOSS_FACTOR] = self.__ancillary_data.loss_factor
-        # data[AMBER_DAILY_PRICE] = self.__ancillary_data.amber_daily_price
-        # data[GREEN_KWH_PRICE] = self.__ancillary_data.green_kwh_price
-        # data[LOSS_FACTOR] = self.__ancillary_data.loss_factor
-        # data[MARKET_KWH_PRICE] = self.__ancillary_data.market_kwh_price
-        # data[NETWORK_DAILY_PRICE] = self.__ancillary_data.network_daily_price
-        # data[NETWORK_KWH_PRICE] = self.__ancillary_data.network_kwh_price
-        # data[OFFSET_KWH_PRICE] = self.__ancillary_data.offset_kwh_price
-        # data[TOTAL_DAILY_PRICE] = self.__ancillary_data.total_daily_price
-        # data[TOTAL_FIXED_KWH_PRICE] = self.__ancillary_data.total_fixed_kwh_price
+        data[ATTR_ATTRIBUTION] = "© Amber Electric Pty Ltd ABN 98 623 603 805"
+        if self.__api.market.nem_time:
+            data[ATTR_NEM_TIME] = self.__api.market.nem_time.isoformat()
+        data[NETWORK_PROVIDER] = self.__api.market.network_provider
         return data
 
     @property
@@ -257,6 +242,10 @@ class AmberElectricPriceSensor(RestoreEntity):
     def device_state_attributes(self):
         """Return device specific attributes."""
         data = dict()
+        data[ATTR_ATTRIBUTION] = "© Amber Electric Pty Ltd ABN 98 623 603 805"
+        if self.__api.market.nem_time:
+            data[ATTR_NEM_TIME] = self.__api.market.nem_time.isoformat()
+        data[NETWORK_PROVIDER] = self.__api.market.network_provider
         data[LOSS_FACTOR] = self.__ancillary_data.loss_factor
         data[AMBER_DAILY_PRICE] = self.__ancillary_data.amber_daily_price
         data[GREEN_KWH_PRICE] = self.__ancillary_data.green_kwh_price
