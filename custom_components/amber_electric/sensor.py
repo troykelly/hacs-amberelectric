@@ -98,12 +98,12 @@ async def async_setup_entry(hass: HomeAssistantType, entry, async_add_entities):
         _LOGGER.debug(
             "%s Current demand: %s",
             event_data["market"].postcode,
-            event_data["market"].current_variable.operational_demand,
+            event_data["market"].latest.operational_demand,
         )
         _LOGGER.debug(
             "%s Solar generation: %s",
             event_data["market"].postcode,
-            event_data["market"].current_variable.rooftop_solar,
+            event_data["market"].latest.rooftop_solar,
         )
 
         for entity_id in hass.data[DOMAIN]["entity_ref"]:
@@ -143,14 +143,21 @@ class AmberElectricMarketConsumption(RestoreEntity):
 
     def async_device_changed(self):
         """Send changed data to HA"""
+        delta = getattr(self.__api.market.latest, ATTR_PERIOD_DELTA, None)
+        if delta:
+            delta = delta.total_seconds()
         _LOGGER.debug(
-            "%s (%s) advising HA of update: %s", self.name, self.unique_id, self.state
+            "%s (%s) advising HA of update: %s/%d",
+            self.name,
+            self.unique_id,
+            self.state,
+            delta,
         )
         self.async_schedule_update_ha_state()
 
     @property
     def state(self):
-        return self.__api.market.current_variable.operational_demand
+        return self.__api.market.latest.operational_demand
 
     @property
     def unit_of_measurement(self):
@@ -190,28 +197,28 @@ class AmberElectricMarketConsumption(RestoreEntity):
             data[ATTR_NEM_TIME] = self.__api.market.nem_time.isoformat()
         data[NETWORK_PROVIDER] = self.__api.market.network_provider
         data[ATTR_PERCENTILE_RANK] = getattr(
-            self.__api.market.current_variable, ATTR_PERCENTILE_RANK, None
+            self.__api.market.latest, ATTR_PERCENTILE_RANK, None
         )
         data[ATTR_PERIOD_DELTA] = getattr(
-            self.__api.market.current_variable, ATTR_PERIOD_DELTA, None
+            self.__api.market.latest, ATTR_PERIOD_DELTA, None
         )
         if data[ATTR_PERIOD_DELTA]:
             data[ATTR_PERIOD_DELTA] = data[ATTR_PERIOD_DELTA].total_seconds()
         data[ATTR_PERIOD_START] = getattr(
-            self.__api.market.current_variable, ATTR_PERIOD_START, None
+            self.__api.market.latest, ATTR_PERIOD_START, None
         )
         if data[ATTR_PERIOD_START]:
             data[ATTR_PERIOD_START] = data[ATTR_PERIOD_START].isoformat()
         data[ATTR_PERIOD_END] = getattr(
-            self.__api.market.current_variable, ATTR_PERIOD_END, None
+            self.__api.market.latest, ATTR_PERIOD_END, None
         )
         if data[ATTR_PERIOD_END]:
             data[ATTR_PERIOD_END] = data[ATTR_PERIOD_END].isoformat()
         data[ATTR_PERIOD_TYPE] = getattr(
-            self.__api.market.current_variable, ATTR_PERIOD_TYPE, None
+            self.__api.market.latest, ATTR_PERIOD_TYPE, None
         )
         data[ATTR_WHOLESALE_KWH_PRICE] = getattr(
-            self.__api.market.current_variable, ATTR_WHOLESALE_KWH_PRICE, None
+            self.__api.market.latest, ATTR_WHOLESALE_KWH_PRICE, None
         )
         return data
 
@@ -250,14 +257,21 @@ class AmberElectricMarketSolar(RestoreEntity):
 
     def async_device_changed(self):
         """Send changed data to HA"""
+        delta = getattr(self.__api.market.latest, ATTR_PERIOD_DELTA, None)
+        if delta:
+            delta = delta.total_seconds()
         _LOGGER.debug(
-            "%s (%s) advising HA of update: %s", self.name, self.unique_id, self.state
+            "%s (%s) advising HA of update: %s/%d",
+            self.name,
+            self.unique_id,
+            self.state,
+            delta,
         )
         self.async_schedule_update_ha_state()
 
     @property
     def state(self):
-        return self.__api.market.current_variable.rooftop_solar
+        return self.__api.market.latest.rooftop_solar
 
     @property
     def unit_of_measurement(self):
@@ -297,25 +311,25 @@ class AmberElectricMarketSolar(RestoreEntity):
             data[ATTR_NEM_TIME] = self.__api.market.nem_time.isoformat()
         data[NETWORK_PROVIDER] = self.__api.market.network_provider
         data[ATTR_RENEWABLES_PERCENTAGE] = getattr(
-            self.__api.market.current_variable, ATTR_RENEWABLES_PERCENTAGE, None
+            self.__api.market.latest, ATTR_RENEWABLES_PERCENTAGE, None
         )
         data[ATTR_PERIOD_DELTA] = getattr(
-            self.__api.market.current_variable, ATTR_PERIOD_DELTA, None
+            self.__api.market.latest, ATTR_PERIOD_DELTA, None
         )
         if data[ATTR_PERIOD_DELTA]:
             data[ATTR_PERIOD_DELTA] = data[ATTR_PERIOD_DELTA].total_seconds()
         data[ATTR_PERIOD_START] = getattr(
-            self.__api.market.current_variable, ATTR_PERIOD_START, None
+            self.__api.market.latest, ATTR_PERIOD_START, None
         )
         if data[ATTR_PERIOD_START]:
             data[ATTR_PERIOD_START] = data[ATTR_PERIOD_START].isoformat()
         data[ATTR_PERIOD_END] = getattr(
-            self.__api.market.current_variable, ATTR_PERIOD_END, None
+            self.__api.market.latest, ATTR_PERIOD_END, None
         )
         if data[ATTR_PERIOD_END]:
             data[ATTR_PERIOD_END] = data[ATTR_PERIOD_END].isoformat()
         data[ATTR_PERIOD_TYPE] = getattr(
-            self.__api.market.current_variable, ATTR_PERIOD_TYPE, None
+            self.__api.market.latest, ATTR_PERIOD_TYPE, None
         )
         return data
 
