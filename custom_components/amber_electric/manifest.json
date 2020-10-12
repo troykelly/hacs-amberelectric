@@ -3,6 +3,7 @@
   "name": "Amber Electric",
   "config_flow": true,
   "documentation": "https://www.home-assistant.io/integrations/amber_electric",
+  "issue_tracker": "https://github.com/troykelly/hacs-amberelectric/issues",
   "requirements": [
     "amber-electric==0.0.17"
   ],
