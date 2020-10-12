@@ -4,6 +4,10 @@
 
 See electricity damand, renewable generation and pricing for your area courtesy of [Amber Electric](https://www.amberelectric.com.au/).
 
+### Note
+
+The Amber Electric API is returning strange (potentially inaccurate) data at the moment. This information should be as a point of interest, but nothing more. Some day, Amber Electric are releasing a new API - maybe they will fix the issue then. Who knows.
+
 ## Live Australian Electricity Pricing
 
 You **do not** need to be an Amber Electric customer to see live pricing for your area.
