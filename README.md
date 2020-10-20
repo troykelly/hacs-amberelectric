@@ -108,7 +108,7 @@ If this helps you, or you are just generous. I do love coffee.
 
 ## Setup
 
-Add the integration.
+Add the integration via home assistant frontend.
 
 **[Optionally]** Supply your username and password for Amber Electric to access your pricing and usage data. This is not required for market rates.
 
