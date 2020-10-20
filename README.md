@@ -108,7 +108,20 @@ If this helps you, or you are just generous. I do love coffee.
 
 ## Setup
 
-Add the integration via home assistant frontend.
+Install via HACS then...
+
+Add the integration as you would any other via the frontend:
+
+Go to `Integrations`
+
+<img width="89" alt="Big_Orange_Plus" src="https://user-images.githubusercontent.com/4564803/96553770-5fea0780-1301-11eb-80e6-97ec6145ddfb.png">
+Click the big plus
+
+<img width="539" alt="Set_Up_New_Integration" src="https://user-images.githubusercontent.com/4564803/96553776-624c6180-1301-11eb-9fec-e7683c6a1cf5.png">
+Search for Amber Electric
+
+<img width="410" alt="Amber_Electric_Username_Password" src="https://user-images.githubusercontent.com/4564803/96553774-611b3480-1301-11eb-8f67-55d2dc3603d9.png">
+Just click Submit (you don't have to supply your username and password for market rate data)
 
 **[Optionally]** Supply your username and password for Amber Electric to access your pricing and usage data. This is not required for market rates.
 
